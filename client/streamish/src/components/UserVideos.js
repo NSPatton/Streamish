@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Video from './Video'
-import { getAllVideos, getVideoSearchResults } from '../modules/videoManager';
+import { getAllWithComments, getVideoSearchResults } from '../modules/videoManager';
 import { useParams } from "react-router-dom";
 
 const VideoList = () => {
@@ -8,11 +8,8 @@ const VideoList = () => {
     const { id } = useParams();
 
     const getVideos = () => {
-        getAllVideos().then(videos => setVideos(videos));
-
-        const filtervidbyuser = videos.filter(video => video.userProfileId.toString() === id)
-        setVideos(filtervidbyuser)
-    }
+        getAllWithComments().then(videos => setVideos(videos));
+    };
 
     const handleInput = (e) => {
         let enteredText = e.target.value;
@@ -31,7 +28,8 @@ const VideoList = () => {
             </div>
             <div className="container">
                 <div className="row justify-content-center">
-                    {videos.map((video) => (
+                    {/* id from useparams is a string and userProfileId are different types, and == allows us to compare the two */}
+                    {videos.filter(video => video.userProfileId == id).map((video) => (
                         <Video video={video} key={video.id} />
                     ))}
                 </div>
