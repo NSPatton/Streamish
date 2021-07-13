@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import Video from './Video';
-import { getAllWithComments, getVideoSearchResults } from "../modules/videoManager";
+import React, { useEffect, useState } from 'react';
+import Video from './Video'
+import { getAllWithComments, getVideoSearchResults } from '../modules/videoManager';
+import { useParams } from "react-router-dom";
 
 const VideoList = () => {
-    //state is used to re render to the dom, so if the variable changes it re renders
     const [videos, setVideos] = useState([]);
+    const { id } = useParams();
 
     const getVideos = () => {
         getAllWithComments().then(videos => setVideos(videos));
@@ -12,9 +13,7 @@ const VideoList = () => {
 
     const handleInput = (e) => {
         let enteredText = e.target.value;
-        //we make a call to the database anytime we type something, we pass that value and the search is made with that value
-        //everything in the database that matches the value gets returned, and the state gets set with those videos
-        getVideoSearchResults(enteredText).then(videos => setVideos(videos));
+        getVideoSearchResults(enteredText).then(videos => setVideos(videos))
     }
 
     useEffect(() => {
@@ -29,7 +28,8 @@ const VideoList = () => {
             </div>
             <div className="container">
                 <div className="row justify-content-center">
-                    {videos.map((video) => (
+                    {/* id from useparams is a string and userProfileId are different types, and == allows us to compare the two */}
+                    {videos.filter(video => video.userProfileId == id).map((video) => (
                         <Video video={video} key={video.id} />
                     ))}
                 </div>
@@ -39,4 +39,3 @@ const VideoList = () => {
 };
 
 export default VideoList;
-
